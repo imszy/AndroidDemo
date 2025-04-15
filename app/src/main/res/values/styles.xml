@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#3F51B5</item>
-        <item name="colorPrimaryDark">#303F9F</item>
-        <item name="colorAccent">#FF4081</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+    </style>
+    
+    <style name="TimerModeButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/timer_mode_background</item>
     </style>
 </resources> 

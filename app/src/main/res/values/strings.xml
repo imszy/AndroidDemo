@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Demo App</string>
+    <string name="app_name">Pomodoro Timer</string>
+    <string name="pomodoro">Pomodoro</string>
+    <string name="short_break">Short Break</string>
+    <string name="long_break">Long Break</string>
+    <string name="start">Start</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="reset">Reset</string>
+    <string name="sessions_completed">sessions completed</string>
 </resources> 

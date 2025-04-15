@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+        }
+
+        .title {
+            margin-bottom: 20px;
+            color: #e74c3c;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .timer-display {
+            background: linear-gradient(135deg, #f9f9f9, #e9e9e9);
+            border-radius: 15px;
+            font-size: 48px;
+            font-weight: 700;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .tomato-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #e74c3c;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #e74c3c;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            min-width: 100px;
+        }
+
+        button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .timer-modes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .timer-mode {
+            padding: 8px 15px;
+            background-color: #f5f5f5;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timer-mode.active {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #e74c3c;
+            width: 0%;
+            transition: width 1s linear;
+        }
+
+        .session-counter {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                width: 90%;
+                padding: 20px;
+            }
+            
+            .timer-display {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <span class="tomato-icon">🍅</span>
+            <h1>Pomodoro Timer</h1>
+        </div>
+        
+        <div class="timer-modes">
+            <div class="timer-mode active" data-mode="pomodoro">Pomodoro</div>
+            <div class="timer-mode" data-mode="shortBreak">Short Break</div>
+            <div class="timer-mode" data-mode="longBreak">Long Break</div>
+        </div>
+        
+        <div class="timer-display">25:00</div>
+        
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+        
+        <div class="controls">
+            <button id="startBtn">Start</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+        
+        <div class="session-counter">
+            <span id="sessionCount">0</span> sessions completed
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM elements
+            const timerDisplay = document.querySelector('.timer-display');
+            const startBtn = document.getElementById('startBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const timerModes = document.querySelectorAll('.timer-mode');
+            const progress = document.querySelector('.progress');
+            const sessionCount = document.getElementById('sessionCount');
+            
+            // Timer variables
+            let timer;
+            let timeLeft;
+            let totalTime;
+            let isRunning = false;
+            let sessions = 0;
+            
+            // Timer settings (in seconds)
+            const timerSettings = {
+                pomodoro: 25 * 60,
+                shortBreak: 5 * 60,
+                longBreak: 15 * 60
+            };
+            
+            let currentMode = 'pomodoro';
+            
+            // Initialize timer
+            timeLeft = timerSettings[currentMode];
+            totalTime = timeLeft;
+            updateDisplay();
+            
+            // Event listeners
+            startBtn.addEventListener('click', toggleTimer);
+            resetBtn.addEventListener('click', resetTimer);
+            
+            timerModes.forEach(mode => {
+                mode.addEventListener('click', () => {
+                    if (isRunning) return;
+                    
+                    timerModes.forEach(m => m.classList.remove('active'));
+                    mode.classList.add('active');
+                    
+                    currentMode = mode.dataset.mode;
+                    timeLeft = timerSettings[currentMode];
+                    totalTime = timeLeft;
+                    
+                    updateDisplay();
+                    progress.style.width = '0%';
+                });
+            });
+            
+            // Timer functions
+            function toggleTimer() {
+                if (isRunning) {
+                    clearInterval(timer);
+                    startBtn.textContent = 'Resume';
+                } else {
+                    startTimer();
+                    startBtn.textContent = 'Pause';
+                }
+                isRunning = !isRunning;
+            }
+            
+            function startTimer() {
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                        updateProgress();
+                    } else {
+                        clearInterval(timer);
+                        timerComplete();
+                    }
+                }, 1000);
+            }
+            
+            function resetTimer() {
+                clearInterval(timer);
+                timeLeft = timerSettings[currentMode];
+                totalTime = timeLeft;
+                isRunning = false;
+                startBtn.textContent = 'Start';
+                updateDisplay();
+                progress.style.width = '0%';
+            }
+            
+            function updateDisplay() {
+                const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                const seconds = (timeLeft % 60).toString().padStart(2, '0');
+                timerDisplay.textContent = `${minutes}:${seconds}`;
+                document.title = `${minutes}:${seconds} - Pomodoro Timer`;
+            }
+            
+            function updateProgress() {
+                const percentage = ((totalTime - timeLeft) / totalTime) * 100;
+                progress.style.width = `${percentage}%`;
+            }
+            
+            function timerComplete() {
+                if (currentMode === 'pomodoro') {
+                    sessions++;
+                    sessionCount.textContent = sessions;
+                    
+                    // Auto switch to break
+                    if (sessions % 4 === 0) {
+                        // After 4 pomodoros, take a long break
+                        switchMode('longBreak');
+                    } else {
+                        switchMode('shortBreak');
+                    }
+                } else {
+                    // After break, go back to pomodoro
+                    switchMode('pomodoro');
+                }
+                
+                // Play notification sound (optional)
+                playNotification();
+                
+                isRunning = false;
+                startBtn.textContent = 'Start';
+            }
+            
+            function switchMode(mode) {
+                timerModes.forEach(m => {
+                    if (m.dataset.mode === mode) {
+                        m.classList.add('active');
+                    } else {
+                        m.classList.remove('active');
+                    }
+                });
+                
+                currentMode = mode;
+                timeLeft = timerSettings[mode];
+                totalTime = timeLeft;
+                updateDisplay();
+                progress.style.width = '0%';
+            }
+            
+            function playNotification() {
+                // Create a simple beep sound
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.value = 800;
+                gainNode.gain.value = 0.1;
+                
+                oscillator.start();
+                
+                setTimeout(() => {
+                    oscillator.stop();
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html> 
