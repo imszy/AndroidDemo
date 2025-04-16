@@ -1,13 +1,19 @@
 package com.example.demoapp;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.media.ToneGenerator;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Vibrator;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView longBreakModeButton;
     private Button startButton;
     private Button resetButton;
+    private Button settingsButton;
     private ProgressBar timerProgressBar;
     private TextView sessionCountTextView;
     
@@ -30,10 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private long totalTimeInMillis;
     private int sessions = 0;
     
-    // Timer settings (in milliseconds)
-    private static final long POMODORO_TIME = 25 * 60 * 1000;
-    private static final long SHORT_BREAK_TIME = 5 * 60 * 1000;
-    private static final long LONG_BREAK_TIME = 15 * 60 * 1000;
+    // Helper classes
+    private TimerPreferences timerPreferences;
     
     // Current timer mode
     private String currentMode = "pomodoro";
@@ -43,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        // Initialize helper classes
+        timerPreferences = new TimerPreferences(this);
+        
         // Initialize UI elements
         timerTextView = findViewById(R.id.timerTextView);
         pomodoroModeButton = findViewById(R.id.pomodoroModeButton);
@@ -50,26 +58,19 @@ public class MainActivity extends AppCompatActivity {
         longBreakModeButton = findViewById(R.id.longBreakModeButton);
         startButton = findViewById(R.id.startButton);
         resetButton = findViewById(R.id.resetButton);
+        settingsButton = findViewById(R.id.settingsButton);
         timerProgressBar = findViewById(R.id.timerProgressBar);
         sessionCountTextView = findViewById(R.id.sessionCountTextView);
         
         // Set initial mode
-        timeLeftInMillis = POMODORO_TIME;
-        totalTimeInMillis = POMODORO_TIME;
-        updateTimerDisplay();
-        updateModeSelection();
+        setTimerModeFromPreferences("pomodoro");
         
         // Set click listeners
         pomodoroModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isRunning) {
-                    currentMode = "pomodoro";
-                    timeLeftInMillis = POMODORO_TIME;
-                    totalTimeInMillis = POMODORO_TIME;
-                    updateTimerDisplay();
-                    updateModeSelection();
-                    updateProgressBar();
+                    setTimerModeFromPreferences("pomodoro");
                 }
             }
         });
@@ -78,12 +79,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!isRunning) {
-                    currentMode = "shortBreak";
-                    timeLeftInMillis = SHORT_BREAK_TIME;
-                    totalTimeInMillis = SHORT_BREAK_TIME;
-                    updateTimerDisplay();
-                    updateModeSelection();
-                    updateProgressBar();
+                    setTimerModeFromPreferences("shortBreak");
                 }
             }
         });
@@ -92,12 +88,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!isRunning) {
-                    currentMode = "longBreak";
-                    timeLeftInMillis = LONG_BREAK_TIME;
-                    totalTimeInMillis = LONG_BREAK_TIME;
-                    updateTimerDisplay();
-                    updateModeSelection();
-                    updateProgressBar();
+                    setTimerModeFromPreferences("longBreak");
                 }
             }
         });
@@ -115,6 +106,37 @@ public class MainActivity extends AppCompatActivity {
                 resetTimer();
             }
         });
+        
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSettingsDialog();
+            }
+        });
+    }
+    
+    /**
+     * Set the timer mode using values from preferences
+     * @param mode The timer mode ("pomodoro", "shortBreak", or "longBreak")
+     */
+    private void setTimerModeFromPreferences(String mode) {
+        currentMode = mode;
+        
+        // Get duration from preferences based on mode
+        int durationMinutes;
+        if (mode.equals("pomodoro")) {
+            durationMinutes = timerPreferences.getPomodoroTime();
+        } else if (mode.equals("shortBreak")) {
+            durationMinutes = timerPreferences.getShortBreakTime();
+        } else {
+            durationMinutes = timerPreferences.getLongBreakTime();
+        }
+        
+        timeLeftInMillis = durationMinutes * 60 * 1000;
+        totalTimeInMillis = timeLeftInMillis;
+        updateTimerDisplay();
+        updateModeSelection();
+        updateProgressBar();
     }
     
     private void toggleTimer() {
@@ -157,19 +179,7 @@ public class MainActivity extends AppCompatActivity {
             timer.cancel();
         }
         
-        if (currentMode.equals("pomodoro")) {
-            timeLeftInMillis = POMODORO_TIME;
-            totalTimeInMillis = POMODORO_TIME;
-        } else if (currentMode.equals("shortBreak")) {
-            timeLeftInMillis = SHORT_BREAK_TIME;
-            totalTimeInMillis = SHORT_BREAK_TIME;
-        } else {
-            timeLeftInMillis = LONG_BREAK_TIME;
-            totalTimeInMillis = LONG_BREAK_TIME;
-        }
-        
-        updateTimerDisplay();
-        updateProgressBar();
+        setTimerModeFromPreferences(currentMode);
         isRunning = false;
         startButton.setText(R.string.start);
     }
@@ -225,17 +235,18 @@ public class MainActivity extends AppCompatActivity {
             // Auto switch to break
             if (sessions % 4 == 0) {
                 // After 4 pomodoros, take a long break
-                switchMode("longBreak");
+                setTimerModeFromPreferences("longBreak");
             } else {
-                switchMode("shortBreak");
+                setTimerModeFromPreferences("shortBreak");
             }
         } else {
             // After break, go back to pomodoro
-            switchMode("pomodoro");
+            setTimerModeFromPreferences("pomodoro");
         }
         
-        // Play notification sound
+        // Play notification sound and vibrate
         playNotificationSound();
+        vibrate();
         
         isRunning = false;
         startButton.setText(R.string.start);
@@ -243,26 +254,80 @@ public class MainActivity extends AppCompatActivity {
     
     private void switchMode(String mode) {
         currentMode = mode;
-        
-        if (mode.equals("pomodoro")) {
-            timeLeftInMillis = POMODORO_TIME;
-            totalTimeInMillis = POMODORO_TIME;
-        } else if (mode.equals("shortBreak")) {
-            timeLeftInMillis = SHORT_BREAK_TIME;
-            totalTimeInMillis = SHORT_BREAK_TIME;
-        } else {
-            timeLeftInMillis = LONG_BREAK_TIME;
-            totalTimeInMillis = LONG_BREAK_TIME;
-        }
-        
-        updateTimerDisplay();
-        updateModeSelection();
-        updateProgressBar();
+        setTimerModeFromPreferences(mode);
     }
     
     private void playNotificationSound() {
         ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
         toneGen.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500);
+    }
+    
+    private void vibrate() {
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            // Vibrate for 500 milliseconds
+            vibrator.vibrate(500);
+        }
+    }
+    
+    /**
+     * Shows the settings dialog
+     */
+    private void showSettingsDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_settings, null);
+        
+        EditText pomodoroTimeEditText = dialogView.findViewById(R.id.pomodoroTimeEditText);
+        EditText shortBreakTimeEditText = dialogView.findViewById(R.id.shortBreakTimeEditText);
+        EditText longBreakTimeEditText = dialogView.findViewById(R.id.longBreakTimeEditText);
+        
+        // Set current values
+        pomodoroTimeEditText.setText(String.valueOf(timerPreferences.getPomodoroTime()));
+        shortBreakTimeEditText.setText(String.valueOf(timerPreferences.getShortBreakTime()));
+        longBreakTimeEditText.setText(String.valueOf(timerPreferences.getLongBreakTime()));
+        
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+        
+        Button saveButton = dialogView.findViewById(R.id.saveButton);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get values from inputs
+                int pomodoroTime = Integer.parseInt(pomodoroTimeEditText.getText().toString());
+                int shortBreakTime = Integer.parseInt(shortBreakTimeEditText.getText().toString());
+                int longBreakTime = Integer.parseInt(longBreakTimeEditText.getText().toString());
+                
+                // Validate values
+                if (pomodoroTime < 1 || shortBreakTime < 1 || longBreakTime < 1) {
+                    Toast.makeText(MainActivity.this, "All durations must be at least 1 minute", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                // Save settings
+                timerPreferences.saveTimerSettings(pomodoroTime, shortBreakTime, longBreakTime);
+                
+                // Update current timer if it's not running
+                if (!isRunning) {
+                    setTimerModeFromPreferences(currentMode);
+                }
+                
+                Toast.makeText(MainActivity.this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        
+        dialog.show();
     }
     
     @Override

@@ -1,0 +1,46 @@
+# Changelog
+
+All notable changes to the PomodoroTimer Android application will be documented in this file.
+
+## [Unreleased]
+
+## [0.3.0] - 2023-08-16
+
+### Removed
+- User-facing changelog feature
+  - Deleted ChangelogManager class
+  - Removed changelog dialog and button from UI
+  - Simplified TimerPreferences class by removing changelog tracking
+
+## [0.2.0] - 2023-08-15
+
+### Added
+- Customizable timer durations through settings dialog
+  - User can set custom durations for Pomodoro, Short Break, and Long Break
+  - Settings are persisted using SharedPreferences
+- Device vibration on timer completion
+  - Added vibration permission to AndroidManifest.xml
+  - Implemented vibrate() method that triggers when any timer completes
+
+### Changed
+- Refactored timer mode switching to use settings from preferences
+- Extracted timer settings into TimerPreferences class for better organization
+- Updated UI to include Settings button
+
+## [0.1.0] - 2023-08-14
+
+### Added
+- Initial implementation of Pomodoro Timer
+- Basic Pomodoro technique functionality
+  - 25-minute work sessions (Pomodoro)
+  - 5-minute short breaks
+  - 15-minute long breaks after 4 Pomodoros
+- Modern UI with tomato-themed color scheme
+- Timer modes selection (Pomodoro, Short Break, Long Break)
+- Timer display with minutes and seconds
+- Progress bar showing elapsed time
+- Start/Pause and Reset buttons
+- Session counter
+- Auto-switching between work and break sessions
+- Audio notification when timer completes
+- Support for portrait and landscape orientations 
