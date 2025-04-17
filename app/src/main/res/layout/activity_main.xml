@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".MainActivity">
 
     <androidx.cardview.widget.CardView
@@ -13,6 +15,8 @@
         android:background="@drawable/container_background"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
+        android:focusable="true"
+        android:contentDescription="@string/app_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +40,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginBottom="8dp"
-                    android:contentDescription="@string/app_name"
+                    android:contentDescription="@string/tomato_icon_description"
                     android:src="@drawable/ic_tomato"
                     app:tint="@color/colorPrimary" />
 
@@ -62,6 +66,8 @@
                     style="@style/TimerModeButton"
                     android:text="@string/pomodoro"
                     android:textColor="@color/colorWhite"
+                    android:focusable="true"
+                    android:clickable="true"
                     tools:background="@color/colorPrimary" />
 
                 <TextView
@@ -69,12 +75,16 @@
                     style="@style/TimerModeButton"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
-                    android:text="@string/short_break" />
+                    android:text="@string/short_break"
+                    android:focusable="true"
+                    android:clickable="true" />
 
                 <TextView
                     android:id="@+id/longBreakModeButton"
                     style="@style/TimerModeButton"
-                    android:text="@string/long_break" />
+                    android:text="@string/long_break"
+                    android:focusable="true"
+                    android:clickable="true" />
             </LinearLayout>
 
             <TextView
@@ -86,7 +96,8 @@
                 android:padding="20dp"
                 android:text="25:00"
                 android:textSize="48sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:importantForAccessibility="yes" />
 
             <ProgressBar
                 android:id="@+id/timerProgressBar"

@@ -2,12 +2,17 @@ package com.example.demoapp;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.media.ToneGenerator;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         settingsButton = findViewById(R.id.settingsButton);
         timerProgressBar = findViewById(R.id.timerProgressBar);
         sessionCountTextView = findViewById(R.id.sessionCountTextView);
+        
+        // Set content descriptions for accessibility
+        timerTextView.setContentDescription(getString(R.string.timer_content_description, "25", "00"));
         
         // Set initial mode
         setTimerModeFromPreferences("pomodoro");
@@ -113,6 +122,50 @@ public class MainActivity extends AppCompatActivity {
                 showSettingsDialog();
             }
         });
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        
+        if (id == R.id.action_privacy_policy) {
+            startActivity(new Intent(this, PrivacyPolicyActivity.class));
+            return true;
+        } else if (id == R.id.action_about) {
+            showAboutDialog();
+            return true;
+        }
+        
+        return super.onOptionsItemSelected(item);
+    }
+    
+    /**
+     * Show information about the app
+     */
+    private void showAboutDialog() {
+        String versionName = "1.0";
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionName = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.app_name)
+                .setMessage(getString(R.string.about_app) + "\n\n" + 
+                            getString(R.string.app_version, versionName))
+                .setPositiveButton(android.R.string.ok, null)
+                .setNegativeButton(R.string.privacy_policy, (dialog, which) -> {
+                    startActivity(new Intent(MainActivity.this, PrivacyPolicyActivity.class));
+                })
+                .show();
     }
     
     /**
@@ -190,6 +243,12 @@ public class MainActivity extends AppCompatActivity {
         
         String timeFormatted = String.format("%02d:%02d", minutes, seconds);
         timerTextView.setText(timeFormatted);
+        
+        // Update content description for accessibility
+        timerTextView.setContentDescription(
+            getString(R.string.timer_content_description, 
+                    String.valueOf(minutes), 
+                    String.valueOf(seconds)));
     }
     
     private void updateProgressBar() {
@@ -303,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
                 
                 // Validate values
                 if (pomodoroTime < 1 || shortBreakTime < 1 || longBreakTime < 1) {
-                    Toast.makeText(MainActivity.this, "All durations must be at least 1 minute", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.invalid_duration, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 

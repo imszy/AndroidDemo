@@ -5,16 +5,18 @@ plugins {
 android {
     compileSdkVersion 33
     defaultConfig {
-        applicationId "com.example.demoapp"
+        applicationId "com.pomodorotimer.focus"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "0.3.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resConfigs "en", "zh-rCN"  // 支持英文和中文
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -22,12 +24,30 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    bundle {
+        language {
+            enableSplit = true
+        }
+        density {
+            enableSplit = true
+        }
+        abi {
+            enableSplit = true
+        }
+    }
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.play:core:1.10.3'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

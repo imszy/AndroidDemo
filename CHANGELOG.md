@@ -4,6 +4,23 @@ All notable changes to the PomodoroTimer Android application will be documented 
 
 ## [Unreleased]
 
+## [0.4.0] - 2023-08-20
+
+### Added
+- Google Play商店发布准备
+  - 添加隐私政策Activity和布局
+  - 添加关于页面和应用版本信息
+  - 添加菜单选项
+  - 支持辅助功能访问
+  - 添加应用描述和元数据
+
+### Changed
+- 优化构建配置
+  - 启用R8代码混淆和资源压缩
+  - 支持应用分发(App Bundle)格式
+  - 更新应用ID为com.pomodorotimer.focus
+  - 更新应用名称为"Pomodoro Focus"
+
 ## [0.3.0] - 2023-08-16
 
 ### Removed
