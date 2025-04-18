@@ -25,6 +25,14 @@
     <string name="long_break_duration">Long Break Duration (minutes)</string>
     <string name="settings_saved">Settings saved successfully</string>
     
+    <!-- 深色模式相关 -->
+    <string name="dark_mode">Dark Mode</string>
+    <string name="dark_mode_on">On</string>
+    <string name="dark_mode_off">Off</string>
+    <string name="dark_mode_system">System Default</string>
+    <string name="dark_mode_settings">Dark Mode Settings</string>
+    <string name="dark_mode_description">Choose your preferred appearance</string>
+    
     <!-- 隐私政策 -->
     <string name="privacy_policy">Privacy Policy</string>
     <string name="privacy_policy_title">Privacy Policy</string>

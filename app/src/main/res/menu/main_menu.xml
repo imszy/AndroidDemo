@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <item
+        android:id="@+id/action_settings"
+        android:title="@string/settings"
+        android:orderInCategory="90"
+        android:icon="@drawable/ic_settings"
+        app:showAsAction="ifRoom" />
+    
+    <item
         android:id="@+id/action_privacy_policy"
         android:title="@string/privacy_policy"
         android:orderInCategory="100"

@@ -8,6 +8,12 @@ public class TimerPreferences {
     private static final String POMODORO_TIME_KEY = "pomodoro_time";
     private static final String SHORT_BREAK_TIME_KEY = "short_break_time";
     private static final String LONG_BREAK_TIME_KEY = "long_break_time";
+    private static final String DARK_MODE_KEY = "dark_mode";
+
+    // 深色模式选项
+    public static final int DARK_MODE_OFF = 0;
+    public static final int DARK_MODE_ON = 1;
+    public static final int DARK_MODE_SYSTEM = 2;
 
     // Default durations in minutes
     private static final int DEFAULT_POMODORO_TIME = 25;
@@ -42,6 +48,24 @@ public class TimerPreferences {
      */
     public int getLongBreakTime() {
         return preferences.getInt(LONG_BREAK_TIME_KEY, DEFAULT_LONG_BREAK_TIME);
+    }
+
+    /**
+     * Get the dark mode setting
+     * @return DARK_MODE_OFF, DARK_MODE_ON, or DARK_MODE_SYSTEM
+     */
+    public int getDarkMode() {
+        return preferences.getInt(DARK_MODE_KEY, DARK_MODE_SYSTEM);
+    }
+
+    /**
+     * Save dark mode setting
+     * @param darkMode The dark mode preference to save
+     */
+    public void saveDarkMode(int darkMode) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(DARK_MODE_KEY, darkMode);
+        editor.apply();
     }
 
     /**

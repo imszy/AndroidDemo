@@ -16,12 +16,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 public class MainActivity extends AppCompatActivity {
     
@@ -32,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView longBreakModeButton;
     private Button startButton;
     private Button resetButton;
-    private Button settingsButton;
     private ProgressBar timerProgressBar;
     private TextView sessionCountTextView;
     
@@ -52,10 +55,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         
-        // Initialize helper classes
+        // 初始化首选项并应用暗色模式设置
         timerPreferences = new TimerPreferences(this);
+        applyDarkMode(timerPreferences.getDarkMode());
+        
+        setContentView(R.layout.activity_main);
         
         // Initialize UI elements
         timerTextView = findViewById(R.id.timerTextView);
@@ -64,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         longBreakModeButton = findViewById(R.id.longBreakModeButton);
         startButton = findViewById(R.id.startButton);
         resetButton = findViewById(R.id.resetButton);
-        settingsButton = findViewById(R.id.settingsButton);
         timerProgressBar = findViewById(R.id.timerProgressBar);
         sessionCountTextView = findViewById(R.id.sessionCountTextView);
         
@@ -115,13 +119,25 @@ public class MainActivity extends AppCompatActivity {
                 resetTimer();
             }
         });
-        
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSettingsDialog();
-            }
-        });
+    }
+    
+    /**
+     * 应用选定的深色模式设置
+     * @param darkMode 深色模式设置选项
+     */
+    private void applyDarkMode(int darkMode) {
+        switch (darkMode) {
+            case TimerPreferences.DARK_MODE_OFF:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case TimerPreferences.DARK_MODE_ON:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case TimerPreferences.DARK_MODE_SYSTEM:
+            default:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
     }
     
     @Override
@@ -134,7 +150,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         
-        if (id == R.id.action_privacy_policy) {
+        if (id == R.id.action_settings) {
+            showSettingsDialog();
+            return true;
+        } else if (id == R.id.action_privacy_policy) {
             startActivity(new Intent(this, PrivacyPolicyActivity.class));
             return true;
         } else if (id == R.id.action_about) {
@@ -325,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator != null && vibrator.hasVibrator()) {
             // Vibrate for 500 milliseconds
-            vibrator.vibrate(5000);
+            vibrator.vibrate(500);
         }
     }
     
@@ -352,6 +371,15 @@ public class MainActivity extends AppCompatActivity {
         Button saveButton = dialogView.findViewById(R.id.saveButton);
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);
         
+        // 添加深色模式设置选项
+        dialogView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDarkModeDialog();
+                dialog.dismiss();
+            }
+        });
+        
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -375,6 +403,96 @@ public class MainActivity extends AppCompatActivity {
                 }
                 
                 Toast.makeText(MainActivity.this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        
+        // 添加设置项 - 深色模式
+        TextView darkModeTextView = new TextView(this);
+        darkModeTextView.setText(R.string.dark_mode);
+        darkModeTextView.setPadding(0, 16, 0, 8);
+        darkModeTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
+        ((LinearLayout) dialogView).addView(darkModeTextView, 0);
+        
+        Button darkModeButton = new Button(this);
+        darkModeButton.setText(R.string.dark_mode_settings);
+        darkModeButton.setBackgroundColor(getResources().getColor(R.color.colorGrayBackground));
+        darkModeButton.setTextColor(getResources().getColor(R.color.colorText));
+        darkModeButton.setPadding(12, 12, 12, 12);
+        
+        darkModeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDarkModeDialog();
+                dialog.dismiss();
+            }
+        });
+        
+        ((LinearLayout) dialogView).addView(darkModeButton, 1);
+        
+        dialog.show();
+    }
+    
+    /**
+     * Shows the dark mode settings dialog
+     */
+    private void showDarkModeDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_dark_mode, null);
+        
+        RadioGroup darkModeRadioGroup = dialogView.findViewById(R.id.darkModeRadioGroup);
+        RadioButton darkModeOffRadio = dialogView.findViewById(R.id.darkModeOffRadio);
+        RadioButton darkModeOnRadio = dialogView.findViewById(R.id.darkModeOnRadio);
+        RadioButton darkModeSystemRadio = dialogView.findViewById(R.id.darkModeSystemRadio);
+        
+        // Set current selection
+        int currentDarkMode = timerPreferences.getDarkMode();
+        switch (currentDarkMode) {
+            case TimerPreferences.DARK_MODE_OFF:
+                darkModeOffRadio.setChecked(true);
+                break;
+            case TimerPreferences.DARK_MODE_ON:
+                darkModeOnRadio.setChecked(true);
+                break;
+            case TimerPreferences.DARK_MODE_SYSTEM:
+            default:
+                darkModeSystemRadio.setChecked(true);
+                break;
+        }
+        
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+        
+        Button saveButton = dialogView.findViewById(R.id.saveButton);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get selected dark mode
+                int selectedDarkMode;
+                int radioButtonId = darkModeRadioGroup.getCheckedRadioButtonId();
+                
+                if (radioButtonId == R.id.darkModeOffRadio) {
+                    selectedDarkMode = TimerPreferences.DARK_MODE_OFF;
+                } else if (radioButtonId == R.id.darkModeOnRadio) {
+                    selectedDarkMode = TimerPreferences.DARK_MODE_ON;
+                } else {
+                    selectedDarkMode = TimerPreferences.DARK_MODE_SYSTEM;
+                }
+                
+                // Save and apply dark mode
+                timerPreferences.saveDarkMode(selectedDarkMode);
+                applyDarkMode(selectedDarkMode);
+                
                 dialog.dismiss();
             }
         });
