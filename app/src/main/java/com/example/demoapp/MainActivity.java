@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator != null && vibrator.hasVibrator()) {
             // Vibrate for 500 milliseconds
-            vibrator.vibrate(500);
+            vibrator.vibrate(5000);
         }
     }
     
