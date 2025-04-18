@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity {
     
     // Helper classes
     private TimerPreferences timerPreferences;
+    private ActivityRecordManager recordManager;
     
     // Current timer mode
     private String currentMode = "pomodoro";
@@ -59,6 +60,7 @@ public class MainActivity extends BaseActivity {
         
         // 初始化首选项并应用暗色模式设置
         timerPreferences = new TimerPreferences(this);
+        recordManager = new ActivityRecordManager(this);
         applyDarkMode(timerPreferences.getDarkMode());
         
         setContentView(R.layout.activity_main);
@@ -159,6 +161,9 @@ public class MainActivity extends BaseActivity {
             return true;
         } else if (id == R.id.action_about) {
             showAboutDialog();
+            return true;
+        } else if (id == R.id.action_history) {
+            startActivity(new Intent(this, HeatmapActivity.class));
             return true;
         }
         
@@ -311,6 +316,9 @@ public class MainActivity extends BaseActivity {
             sessions++;
             sessionCountTextView.setText(sessions + " " + getString(R.string.sessions_completed));
             
+            // 记录番茄钟完成
+            recordManager.addRecord(ActivityRecord.TYPE_POMODORO);
+            
             // Auto switch to break
             if (sessions % 4 == 0) {
                 // After 4 pomodoros, take a long break
@@ -318,7 +326,16 @@ public class MainActivity extends BaseActivity {
             } else {
                 setTimerModeFromPreferences("shortBreak");
             }
-        } else {
+        } else if (currentMode.equals("shortBreak")) {
+            // 记录短休息完成
+            recordManager.addRecord(ActivityRecord.TYPE_SHORT_BREAK);
+            
+            // After break, go back to pomodoro
+            setTimerModeFromPreferences("pomodoro");
+        } else if (currentMode.equals("longBreak")) {
+            // 记录长休息完成
+            recordManager.addRecord(ActivityRecord.TYPE_LONG_BREAK);
+            
             // After break, go back to pomodoro
             setTimerModeFromPreferences("pomodoro");
         }

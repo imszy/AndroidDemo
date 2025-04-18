@@ -10,6 +10,12 @@
         app:showAsAction="ifRoom" />
     
     <item
+        android:id="@+id/action_history"
+        android:title="@string/activity_history"
+        android:orderInCategory="95"
+        app:showAsAction="never" />
+    
+    <item
         android:id="@+id/action_privacy_policy"
         android:title="@string/privacy_policy"
         android:orderInCategory="100"

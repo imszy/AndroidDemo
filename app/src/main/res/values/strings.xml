@@ -40,6 +40,15 @@
     <string name="language_system">System Default</string>
     <string name="restart_to_apply">App will restart to apply language change</string>
     
+    <!-- 活动历史相关 -->
+    <string name="activity_history">Activity History</string>
+    <string name="activity_description">Your focus activity for the last 30 days</string>
+    <string name="pomodoro_count">Pomodoro: %1$d</string>
+    <string name="short_break_count">Short Break: %1$d</string>
+    <string name="long_break_count">Long Break: %1$d</string>
+    <string name="back">Back</string>
+    <string name="view_activity_history">View Activity History</string>
+    
     <!-- 隐私政策 -->
     <string name="privacy_policy">Privacy Policy</string>
     <string name="privacy_policy_title">Privacy Policy</string>

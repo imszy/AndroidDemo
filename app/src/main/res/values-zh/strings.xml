@@ -40,6 +40,15 @@
     <string name="language_system">跟随系统</string>
     <string name="restart_to_apply">应用将重启以应用语言更改</string>
     
+    <!-- 活动历史相关 -->
+    <string name="activity_history">活动历史</string>
+    <string name="activity_description">过去30天的专注活动记录</string>
+    <string name="pomodoro_count">番茄钟: %1$d</string>
+    <string name="short_break_count">短休息: %1$d</string>
+    <string name="long_break_count">长休息: %1$d</string>
+    <string name="back">返回</string>
+    <string name="view_activity_history">查看活动历史</string>
+    
     <!-- 隐私政策 -->
     <string name="privacy_policy">隐私政策</string>
     <string name="privacy_policy_title">隐私政策</string>
