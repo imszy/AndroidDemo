@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Pomodoro Focus</string>
-    <string name="app_description">专业的番茄工作法计时器，提高工作效率与专注力</string>
+    <string name="app_description">Professional Pomodoro Timer to improve work efficiency and focus</string>
     <string name="pomodoro">Pomodoro</string>
     <string name="short_break">Short Break</string>
     <string name="long_break">Long Break</string>
@@ -10,11 +10,11 @@
     <string name="reset">Reset</string>
     <string name="sessions_completed">sessions completed</string>
     
-    <!-- 应用商店相关 -->
+    <!-- App Store Related -->
     <string name="start_pomodoro">Start Pomodoro Timer</string>
-    <string name="app_short_description">专业的番茄工作法计时器，提高工作效率与专注力</string>
-    <string name="about_app">Pomodoro Focus是一款专为提高工作和学习效率设计的番茄钟应用</string>
-    <string name="app_version">版本 %1$s</string>
+    <string name="app_short_description">Professional Pomodoro Timer to improve work efficiency and focus</string>
+    <string name="about_app">Pomodoro Focus is a Pomodoro timer app designed to improve work and study efficiency</string>
+    <string name="app_version">Version %1$s</string>
     
     <!-- Settings Strings -->
     <string name="settings">Settings</string>
@@ -25,7 +25,7 @@
     <string name="long_break_duration">Long Break Duration (minutes)</string>
     <string name="settings_saved">Settings saved successfully</string>
     
-    <!-- 深色模式相关 -->
+    <!-- Dark Mode Related -->
     <string name="dark_mode">Dark Mode</string>
     <string name="dark_mode_on">Dark</string>
     <string name="dark_mode_off">Light</string>
@@ -33,22 +33,22 @@
     <string name="dark_mode_settings">Dark Mode Settings</string>
     <string name="dark_mode_description">Choose your preferred appearance</string>
     
-    <!-- 语言选择相关 -->
+    <!-- Language Selection -->
     <string name="language">Language</string>
     <string name="language_english">English</string>
     <string name="language_chinese">中文</string>
     <string name="language_system">System Default</string>
     <string name="restart_to_apply">App will restart to apply language change</string>
     
-    <!-- 隐私政策 -->
+    <!-- Privacy Policy -->
     <string name="privacy_policy">Privacy Policy</string>
     <string name="privacy_policy_title">Privacy Policy</string>
     <string name="privacy_policy_text">This app does not collect any personal information. All timer settings are stored locally on your device and are not transmitted to any servers.\n\nPermissions:\n- VIBRATE: Used for vibration notification when timer completes.\n- INTERNET: Only used to access privacy policy online.</string>
     
-    <!-- 错误和提示 -->
+    <!-- Errors and Tips -->
     <string name="invalid_duration">All durations must be at least 1 minute</string>
     
-    <!-- 辅助功能相关 -->
+    <!-- Accessibility Related -->
     <string name="timer_content_description">Timer showing %1$s minutes and %2$s seconds</string>
     <string name="tomato_icon_description">Tomato icon</string>
 </resources> 

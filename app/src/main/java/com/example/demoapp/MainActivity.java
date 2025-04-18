@@ -26,10 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     
     // UI elements
     private TextView timerTextView;
@@ -371,6 +370,50 @@ public class MainActivity extends AppCompatActivity {
         int currentDarkMode = timerPreferences.getDarkMode();
         darkModeSpinner.setSelection(currentDarkMode);
         
+        // 添加语言选择下拉列表
+        LinearLayout settingsLayout = (LinearLayout) dialogView;
+        
+        LinearLayout languageLayout = new LinearLayout(this);
+        languageLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        languageLayout.setOrientation(LinearLayout.HORIZONTAL);
+        languageLayout.setPadding(0, 0, 0, 16);
+        
+        TextView languageLabel = new TextView(this);
+        LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 2.0f);
+        languageLabel.setLayoutParams(labelParams);
+        languageLabel.setText(R.string.language);
+        languageLabel.setTextColor(getResources().getColor(R.color.colorText));
+        
+        Spinner languageSpinner = new Spinner(this);
+        LinearLayout.LayoutParams spinnerParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+        languageSpinner.setLayoutParams(spinnerParams);
+        
+        ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(this,
+                R.array.language_options, android.R.layout.simple_spinner_item);
+        languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        languageSpinner.setAdapter(languageAdapter);
+        
+        // 设置当前语言选择
+        String currentLanguage = timerPreferences.getLanguage();
+        if (currentLanguage.equals(TimerPreferences.LANGUAGE_ENGLISH)) {
+            languageSpinner.setSelection(1); // English
+        } else if (currentLanguage.equals(TimerPreferences.LANGUAGE_CHINESE)) {
+            languageSpinner.setSelection(2); // Chinese
+        } else {
+            languageSpinner.setSelection(0); // System
+        }
+        
+        languageLayout.addView(languageLabel);
+        languageLayout.addView(languageSpinner);
+        
+        // 将语言选择添加到设置对话框布局中
+        int position = settingsLayout.getChildCount() - 1; // 在最后一个保存/取消按钮前插入
+        settingsLayout.addView(languageLayout, position);
+        
         // Set current timer values
         pomodoroTimeEditText.setText(String.valueOf(timerPreferences.getPomodoroTime()));
         shortBreakTimeEditText.setText(String.valueOf(timerPreferences.getShortBreakTime()));
@@ -393,6 +436,24 @@ public class MainActivity extends AppCompatActivity {
                 int longBreakTime = Integer.parseInt(longBreakTimeEditText.getText().toString());
                 int selectedDarkMode = darkModeSpinner.getSelectedItemPosition();
                 
+                // 获取选择的语言
+                int selectedLanguagePosition = languageSpinner.getSelectedItemPosition();
+                String selectedLanguage;
+                switch (selectedLanguagePosition) {
+                    case 1:
+                        selectedLanguage = TimerPreferences.LANGUAGE_ENGLISH;
+                        break;
+                    case 2:
+                        selectedLanguage = TimerPreferences.LANGUAGE_CHINESE;
+                        break;
+                    default:
+                        selectedLanguage = TimerPreferences.LANGUAGE_SYSTEM;
+                        break;
+                }
+                
+                // 检查语言是否已更改
+                boolean languageChanged = !selectedLanguage.equals(timerPreferences.getLanguage());
+                
                 // Validate values
                 if (pomodoroTime < 1 || shortBreakTime < 1 || longBreakTime < 1) {
                     Toast.makeText(MainActivity.this, R.string.invalid_duration, Toast.LENGTH_SHORT).show();
@@ -402,6 +463,7 @@ public class MainActivity extends AppCompatActivity {
                 // 保存设置
                 timerPreferences.saveTimerSettings(pomodoroTime, shortBreakTime, longBreakTime);
                 timerPreferences.saveDarkMode(selectedDarkMode);
+                timerPreferences.saveLanguage(selectedLanguage);
                 
                 // 立即应用深色模式
                 applyDarkMode(selectedDarkMode);
@@ -413,6 +475,21 @@ public class MainActivity extends AppCompatActivity {
                 
                 Toast.makeText(MainActivity.this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                
+                // 如果语言已更改，重启Activity以应用新语言
+                if (languageChanged) {
+                    Toast.makeText(MainActivity.this, R.string.restart_to_apply, Toast.LENGTH_SHORT).show();
+                    
+                    // 延迟重启活动
+                    new android.os.Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
+                        }
+                    }, 1000);
+                }
             }
         });
         

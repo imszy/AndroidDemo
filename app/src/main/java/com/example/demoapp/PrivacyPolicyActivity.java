@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class PrivacyPolicyActivity extends AppCompatActivity {
+public class PrivacyPolicyActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

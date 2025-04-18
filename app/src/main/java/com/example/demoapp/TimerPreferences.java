@@ -9,11 +9,17 @@ public class TimerPreferences {
     private static final String SHORT_BREAK_TIME_KEY = "short_break_time";
     private static final String LONG_BREAK_TIME_KEY = "long_break_time";
     private static final String DARK_MODE_KEY = "dark_mode";
+    private static final String LANGUAGE_KEY = "language";
 
     // 深色模式选项
     public static final int DARK_MODE_OFF = 0;
     public static final int DARK_MODE_ON = 1;
     public static final int DARK_MODE_SYSTEM = 2;
+    
+    // 语言选项
+    public static final String LANGUAGE_SYSTEM = "system";
+    public static final String LANGUAGE_ENGLISH = "en";
+    public static final String LANGUAGE_CHINESE = "zh";
 
     // Default durations in minutes
     private static final int DEFAULT_POMODORO_TIME = 25;
@@ -57,6 +63,14 @@ public class TimerPreferences {
     public int getDarkMode() {
         return preferences.getInt(DARK_MODE_KEY, DARK_MODE_SYSTEM);
     }
+    
+    /**
+     * Get the language setting
+     * @return LANGUAGE_SYSTEM, LANGUAGE_ENGLISH, or LANGUAGE_CHINESE
+     */
+    public String getLanguage() {
+        return preferences.getString(LANGUAGE_KEY, LANGUAGE_SYSTEM);
+    }
 
     /**
      * Save dark mode setting
@@ -65,6 +79,16 @@ public class TimerPreferences {
     public void saveDarkMode(int darkMode) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(DARK_MODE_KEY, darkMode);
+        editor.apply();
+    }
+    
+    /**
+     * Save language setting
+     * @param language The language preference to save
+     */
+    public void saveLanguage(String language) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(LANGUAGE_KEY, language);
         editor.apply();
     }
 

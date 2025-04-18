@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">番茄专注</string>
+    <string name="app_description">专业的番茄工作法计时器，提高工作效率与专注力</string>
+    <string name="pomodoro">番茄钟</string>
+    <string name="short_break">短休息</string>
+    <string name="long_break">长休息</string>
+    <string name="start">开始</string>
+    <string name="pause">暂停</string>
+    <string name="resume">继续</string>
+    <string name="reset">重置</string>
+    <string name="sessions_completed">个番茄钟完成</string>
+    
+    <!-- 应用商店相关 -->
+    <string name="start_pomodoro">开始番茄计时器</string>
+    <string name="app_short_description">专业的番茄工作法计时器，提高工作效率与专注力</string>
+    <string name="about_app">番茄专注是一款专为提高工作和学习效率设计的番茄钟应用</string>
+    <string name="app_version">版本 %1$s</string>
+    
+    <!-- Settings Strings -->
+    <string name="settings">设置</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="pomodoro_duration">番茄钟时长（分钟）</string>
+    <string name="short_break_duration">短休息时长（分钟）</string>
+    <string name="long_break_duration">长休息时长（分钟）</string>
+    <string name="settings_saved">设置已保存</string>
+    
+    <!-- 深色模式相关 -->
+    <string name="dark_mode">深色模式</string>
+    <string name="dark_mode_on">深色</string>
+    <string name="dark_mode_off">浅色</string>
+    <string name="dark_mode_system">跟随系统</string>
+    <string name="dark_mode_settings">深色模式设置</string>
+    <string name="dark_mode_description">选择您喜欢的外观</string>
+    
+    <!-- 语言选择相关 -->
+    <string name="language">语言</string>
+    <string name="language_english">English</string>
+    <string name="language_chinese">中文</string>
+    <string name="language_system">跟随系统</string>
+    <string name="restart_to_apply">应用将重启以应用语言更改</string>
+    
+    <!-- 隐私政策 -->
+    <string name="privacy_policy">隐私政策</string>
+    <string name="privacy_policy_title">隐私政策</string>
+    <string name="privacy_policy_text">本应用不收集任何个人信息。所有计时器设置都存储在您的设备本地，不会传输到任何服务器。\n\n权限说明：\n- 振动：用于计时结束时的振动提醒。\n- 网络：仅用于在线访问隐私政策。</string>
+    
+    <!-- 错误和提示 -->
+    <string name="invalid_duration">所有时长必须至少为1分钟</string>
+    
+    <!-- 辅助功能相关 -->
+    <string name="timer_content_description">计时器显示 %1$s 分钟 %2$s 秒</string>
+    <string name="tomato_icon_description">番茄图标</string>
+</resources> 
