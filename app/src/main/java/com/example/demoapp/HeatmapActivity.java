@@ -1,10 +1,12 @@
 package com.example.demoapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,6 +52,23 @@ public class HeatmapActivity extends BaseActivity {
                 finish();
             }
         });
+        
+        // 设置日期点击事件
+        heatmapView.setOnDateClickListener(new CalendarHeatmapView.OnDateClickListener() {
+            @Override
+            public void onDateClick(Date date) {
+                showDailyDetail(date);
+            }
+        });
+    }
+    
+    /**
+     * 显示选中日期的详细活动记录
+     */
+    private void showDailyDetail(Date date) {
+        Intent intent = new Intent(this, DailyDetailActivity.class);
+        intent.putExtra(DailyDetailActivity.EXTRA_DATE, date.getTime());
+        startActivity(intent);
     }
     
     /**

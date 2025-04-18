@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.text.SimpleDateFormat;
@@ -46,6 +47,28 @@ public class CalendarHeatmapView extends View {
     private SimpleDateFormat dayFormat = new SimpleDateFormat("dd", Locale.getDefault());
     private SimpleDateFormat keyFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
     
+    // 存储每个单元格的日期和位置
+    private List<DateCell> dateCells = new ArrayList<>();
+    
+    // 日期点击监听器
+    private OnDateClickListener onDateClickListener;
+    
+    // 定义日期点击监听器接口
+    public interface OnDateClickListener {
+        void onDateClick(Date date);
+    }
+    
+    // 日期单元格内部类
+    private class DateCell {
+        RectF rect;
+        Date date;
+        
+        DateCell(RectF rect, Date date) {
+            this.rect = rect;
+            this.date = date;
+        }
+    }
+    
     public CalendarHeatmapView(Context context) {
         super(context);
         init();
@@ -71,6 +94,16 @@ public class CalendarHeatmapView extends View {
         textPaint.setAntiAlias(true);
         textPaint.setColor(COLOR_TEXT);
         textPaint.setTextAlign(Paint.Align.CENTER);
+        
+        // 使视图可点击
+        setClickable(true);
+    }
+    
+    /**
+     * 设置日期点击监听器
+     */
+    public void setOnDateClickListener(OnDateClickListener listener) {
+        this.onDateClickListener = listener;
     }
     
     /**
@@ -104,6 +137,9 @@ public class CalendarHeatmapView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         
+        // 清空日期单元格列表
+        dateCells.clear();
+        
         // 计算开始日期
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -(DAYS_TO_SHOW - 1)); // 从30天前开始
@@ -125,6 +161,9 @@ public class CalendarHeatmapView extends View {
             float right = left + cellSize - 2 * padding;
             float bottom = top + cellSize - 2 * padding;
             RectF rect = new RectF(left, top, right, bottom);
+            
+            // 保存日期单元格
+            dateCells.add(new DateCell(rect, (Date) date.clone()));
             
             // 根据记录类型设置颜色
             if (dateToRecord.containsKey(key)) {
@@ -168,5 +207,25 @@ public class CalendarHeatmapView extends View {
         int height = (int) (width * ROWS / (float) DAYS_PER_ROW); // 保持行列比例
         
         setMeasuredDimension(width, height);
+    }
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            float x = event.getX();
+            float y = event.getY();
+            
+            // 检查点击的单元格
+            for (DateCell cell : dateCells) {
+                if (cell.rect.contains(x, y)) {
+                    if (onDateClickListener != null) {
+                        onDateClickListener.onDateClick(cell.date);
+                    }
+                    return true;
+                }
+            }
+        }
+        
+        return super.onTouchEvent(event);
     }
 } 

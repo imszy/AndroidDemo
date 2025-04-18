@@ -4,6 +4,13 @@ All notable changes to the PomodoroTimer Android application will be documented 
 
 ## [Unreleased]
 
+### Added
+- 详细活动历史记录功能
+  - 增强活动记录，存储开始和结束时间
+  - 添加按小时查看Pomodoro活动的详细视图
+  - 点击日期可查看该日24小时活动时间线
+  - 活动类型用不同颜色显示：番茄工作(红色)、短休息(浅绿色)、长休息(深绿色)
+
 ## [0.4.0] - 2023-08-20
 
 ### Added

@@ -36,6 +36,10 @@
             android:name=".HeatmapActivity"
             android:exported="false"
             android:label="@string/activity_history" />
+        <activity
+            android:name=".DailyDetailActivity"
+            android:exported="false"
+            android:label="@string/daily_detail" />
 
         <meta-data
             android:name="com.google.android.gms.version"

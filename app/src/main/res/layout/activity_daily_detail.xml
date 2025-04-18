@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".DailyDetailActivity">
+
+    <TextView
+        android:id="@+id/text_selected_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        tools:text="2023年10月15日" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="番茄工作法时间表"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.example.demoapp.DailyDetailView
+            android:id="@+id/daily_detail_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="#FF6347"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="番茄工作"
+            android:layout_marginEnd="16dp" />
+
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="#90EE90"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="短休息"
+            android:layout_marginEnd="16dp" />
+
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="#008000"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="长休息" />
+
+    </LinearLayout>
+
+</LinearLayout> 

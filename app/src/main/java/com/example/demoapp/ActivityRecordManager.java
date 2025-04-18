@@ -51,7 +51,37 @@ public class ActivityRecordManager {
     }
     
     /**
-     * 添加一个活动记录
+     * 添加一个活动记录的开始
+     * @return 返回新创建的记录ID，用于后续更新结束时间
+     */
+    public int startActivity(int type) {
+        Date now = new Date();
+        ActivityRecord newRecord = new ActivityRecord(now, type);
+        records.add(newRecord);
+        saveRecords();
+        return records.size() - 1; // 返回索引作为ID
+    }
+    
+    /**
+     * 更新活动记录的结束时间
+     */
+    public void endActivity(int recordId) {
+        if (recordId >= 0 && recordId < records.size()) {
+            records.get(recordId).setEndTime(new Date());
+            saveRecords();
+        }
+    }
+    
+    /**
+     * 添加一个活动记录（包含开始和结束时间）
+     */
+    public void addRecord(int type, Date startTime, Date endTime) {
+        records.add(new ActivityRecord(startTime, type, startTime, endTime));
+        saveRecords();
+    }
+    
+    /**
+     * 添加一个活动记录（兼容旧方法）
      */
     public void addRecord(int type) {
         Date now = new Date();
@@ -104,6 +134,36 @@ public class ActivityRecordManager {
         Date startDate = cal.getTime();
         
         return getRecordsInRange(startDate, new Date());
+    }
+    
+    /**
+     * 获取指定日期的所有记录
+     */
+    public List<ActivityRecord> getRecordsForDate(Date date) {
+        List<ActivityRecord> result = new ArrayList<>();
+        
+        for (ActivityRecord record : records) {
+            if (record.isSameDay(date)) {
+                result.add(record);
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 获取指定日期指定小时的记录
+     */
+    public List<ActivityRecord> getRecordsForHour(Date date, int hour) {
+        List<ActivityRecord> result = new ArrayList<>();
+        
+        for (ActivityRecord record : records) {
+            if (record.isSameDay(date) && record.getHour() == hour) {
+                result.add(record);
+            }
+        }
+        
+        return result;
     }
     
     /**

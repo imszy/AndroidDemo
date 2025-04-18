@@ -48,6 +48,7 @@
     <string name="long_break_count">Long Break: %1$d</string>
     <string name="back">Back</string>
     <string name="view_activity_history">View Activity History</string>
+    <string name="daily_detail">Daily Detail</string>
     
     <!-- 隐私政策 -->
     <string name="privacy_policy">Privacy Policy</string>
