@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -135,13 +136,15 @@ public class DailyDetailView extends View {
         int endMinute = record.getEndMinute();
         
         // 如果开始和结束时间跨小时，需要调整
-        if (record.getHour() < hour) {
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(record.getStartTime());
+        if (startCal.get(Calendar.HOUR_OF_DAY) < hour) {
             startMinute = 0;
         }
         
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(record.getEndTime());
-        if (cal.get(Calendar.HOUR_OF_DAY) > hour) {
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(record.getEndTime());
+        if (endCal.get(Calendar.HOUR_OF_DAY) > hour) {
             endMinute = 60;
         }
         
@@ -169,7 +172,31 @@ public class DailyDetailView extends View {
     }
     
     private List<ActivityRecord> getRecordsForHour(int hour) {
-        ActivityRecordManager manager = new ActivityRecordManager(getContext());
-        return manager.getRecordsForHour(selectedDate, hour);
+        if (records == null) {
+            return new ArrayList<>();
+        }
+        
+        List<ActivityRecord> result = new ArrayList<>();
+        
+        for (ActivityRecord record : records) {
+            Calendar startCal = Calendar.getInstance();
+            startCal.setTime(record.getStartTime());
+            
+            Calendar endCal = Calendar.getInstance();
+            endCal.setTime(record.getEndTime());
+            
+            // 获取开始和结束小时
+            int startHour = startCal.get(Calendar.HOUR_OF_DAY);
+            int endHour = endCal.get(Calendar.HOUR_OF_DAY);
+            
+            // 如果活动时间范围与当前小时有重叠，则添加
+            if ((startHour <= hour && endHour >= hour) ||
+                (startHour == hour) ||
+                (endHour == hour)) {
+                result.add(record);
+            }
+        }
+        
+        return result;
     }
 } 
