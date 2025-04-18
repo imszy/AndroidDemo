@@ -83,6 +83,27 @@
             android:gravity="center"
             android:text="15" />
     </LinearLayout>
+    
+    <!-- 添加深色模式下拉列表 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/dark_mode"
+            android:textColor="@color/colorText" />
+
+        <Spinner
+            android:id="@+id/darkModeSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

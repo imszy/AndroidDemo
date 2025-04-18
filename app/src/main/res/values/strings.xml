@@ -27,8 +27,8 @@
     
     <!-- 深色模式相关 -->
     <string name="dark_mode">Dark Mode</string>
-    <string name="dark_mode_on">On</string>
-    <string name="dark_mode_off">Off</string>
+    <string name="dark_mode_on">Dark</string>
+    <string name="dark_mode_off">Light</string>
     <string name="dark_mode_system">System Default</string>
     <string name="dark_mode_settings">Dark Mode Settings</string>
     <string name="dark_mode_description">Choose your preferred appearance</string>

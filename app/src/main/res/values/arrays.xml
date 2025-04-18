@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dark_mode_options">
+        <item>@string/dark_mode_off</item>
+        <item>@string/dark_mode_on</item>
+        <item>@string/dark_mode_system</item>
+    </string-array>
+
+    <string-array name="dark_mode_values">
+        <item>0</item>  <!-- DARK_MODE_OFF -->
+        <item>1</item>  <!-- DARK_MODE_ON -->
+        <item>2</item>  <!-- DARK_MODE_SYSTEM -->
+    </string-array>
+</resources> 

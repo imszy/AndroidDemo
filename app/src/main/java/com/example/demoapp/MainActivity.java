@@ -14,12 +14,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -349,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
     }
     
     /**
-     * Shows the settings dialog
+     * Show settings dialog with timer durations and dark mode options
      */
     private void showSettingsDialog() {
         View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_settings, null);
@@ -357,8 +359,19 @@ public class MainActivity extends AppCompatActivity {
         EditText pomodoroTimeEditText = dialogView.findViewById(R.id.pomodoroTimeEditText);
         EditText shortBreakTimeEditText = dialogView.findViewById(R.id.shortBreakTimeEditText);
         EditText longBreakTimeEditText = dialogView.findViewById(R.id.longBreakTimeEditText);
+        Spinner darkModeSpinner = dialogView.findViewById(R.id.darkModeSpinner);
         
-        // Set current values
+        // 设置深色模式下拉列表适配器
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.dark_mode_options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        darkModeSpinner.setAdapter(adapter);
+        
+        // 设置当前选中的深色模式
+        int currentDarkMode = timerPreferences.getDarkMode();
+        darkModeSpinner.setSelection(currentDarkMode);
+        
+        // Set current timer values
         pomodoroTimeEditText.setText(String.valueOf(timerPreferences.getPomodoroTime()));
         shortBreakTimeEditText.setText(String.valueOf(timerPreferences.getShortBreakTime()));
         longBreakTimeEditText.setText(String.valueOf(timerPreferences.getLongBreakTime()));
@@ -371,15 +384,6 @@ public class MainActivity extends AppCompatActivity {
         Button saveButton = dialogView.findViewById(R.id.saveButton);
         Button cancelButton = dialogView.findViewById(R.id.cancelButton);
         
-        // 添加深色模式设置选项
-        dialogView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDarkModeDialog();
-                dialog.dismiss();
-            }
-        });
-        
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -387,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
                 int pomodoroTime = Integer.parseInt(pomodoroTimeEditText.getText().toString());
                 int shortBreakTime = Integer.parseInt(shortBreakTimeEditText.getText().toString());
                 int longBreakTime = Integer.parseInt(longBreakTimeEditText.getText().toString());
+                int selectedDarkMode = darkModeSpinner.getSelectedItemPosition();
                 
                 // Validate values
                 if (pomodoroTime < 1 || shortBreakTime < 1 || longBreakTime < 1) {
@@ -394,8 +399,12 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 
-                // Save settings
+                // 保存设置
                 timerPreferences.saveTimerSettings(pomodoroTime, shortBreakTime, longBreakTime);
+                timerPreferences.saveDarkMode(selectedDarkMode);
+                
+                // 立即应用深色模式
+                applyDarkMode(selectedDarkMode);
                 
                 // Update current timer if it's not running
                 if (!isRunning) {
@@ -403,96 +412,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 
                 Toast.makeText(MainActivity.this, R.string.settings_saved, Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
-        
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        
-        // 添加设置项 - 深色模式
-        TextView darkModeTextView = new TextView(this);
-        darkModeTextView.setText(R.string.dark_mode);
-        darkModeTextView.setPadding(0, 16, 0, 8);
-        darkModeTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
-        ((LinearLayout) dialogView).addView(darkModeTextView, 0);
-        
-        Button darkModeButton = new Button(this);
-        darkModeButton.setText(R.string.dark_mode_settings);
-        darkModeButton.setBackgroundColor(getResources().getColor(R.color.colorGrayBackground));
-        darkModeButton.setTextColor(getResources().getColor(R.color.colorText));
-        darkModeButton.setPadding(12, 12, 12, 12);
-        
-        darkModeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDarkModeDialog();
-                dialog.dismiss();
-            }
-        });
-        
-        ((LinearLayout) dialogView).addView(darkModeButton, 1);
-        
-        dialog.show();
-    }
-    
-    /**
-     * Shows the dark mode settings dialog
-     */
-    private void showDarkModeDialog() {
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_dark_mode, null);
-        
-        RadioGroup darkModeRadioGroup = dialogView.findViewById(R.id.darkModeRadioGroup);
-        RadioButton darkModeOffRadio = dialogView.findViewById(R.id.darkModeOffRadio);
-        RadioButton darkModeOnRadio = dialogView.findViewById(R.id.darkModeOnRadio);
-        RadioButton darkModeSystemRadio = dialogView.findViewById(R.id.darkModeSystemRadio);
-        
-        // Set current selection
-        int currentDarkMode = timerPreferences.getDarkMode();
-        switch (currentDarkMode) {
-            case TimerPreferences.DARK_MODE_OFF:
-                darkModeOffRadio.setChecked(true);
-                break;
-            case TimerPreferences.DARK_MODE_ON:
-                darkModeOnRadio.setChecked(true);
-                break;
-            case TimerPreferences.DARK_MODE_SYSTEM:
-            default:
-                darkModeSystemRadio.setChecked(true);
-                break;
-        }
-        
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(dialogView)
-                .setCancelable(true)
-                .create();
-        
-        Button saveButton = dialogView.findViewById(R.id.saveButton);
-        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
-        
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get selected dark mode
-                int selectedDarkMode;
-                int radioButtonId = darkModeRadioGroup.getCheckedRadioButtonId();
-                
-                if (radioButtonId == R.id.darkModeOffRadio) {
-                    selectedDarkMode = TimerPreferences.DARK_MODE_OFF;
-                } else if (radioButtonId == R.id.darkModeOnRadio) {
-                    selectedDarkMode = TimerPreferences.DARK_MODE_ON;
-                } else {
-                    selectedDarkMode = TimerPreferences.DARK_MODE_SYSTEM;
-                }
-                
-                // Save and apply dark mode
-                timerPreferences.saveDarkMode(selectedDarkMode);
-                applyDarkMode(selectedDarkMode);
-                
                 dialog.dismiss();
             }
         });
