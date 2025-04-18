@@ -6,17 +6,22 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 显示一天中每小时的活动记录详情的视图
  */
 public class DailyDetailView extends View {
+    private static final String TAG = "DailyDetailView";
     private static final int HOURS_IN_DAY = 24;
     private static final int HOUR_HEIGHT = 40; // dp
     private static final int TEXT_SIZE = 12; // sp
@@ -70,6 +75,23 @@ public class DailyDetailView extends View {
     public void setDate(Date date, List<ActivityRecord> records) {
         this.selectedDate = date;
         this.records = records;
+        
+        // 调试信息
+        if (records != null) {
+            Log.d(TAG, "设置记录: " + records.size() + "条");
+            for (ActivityRecord record : records) {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+                String type = record.getType() == ActivityRecord.TYPE_POMODORO ? "番茄" : 
+                              record.getType() == ActivityRecord.TYPE_SHORT_BREAK ? "短休息" : "长休息";
+                
+                Log.d(TAG, type + ": " + 
+                     timeFormat.format(record.getStartTime()) + " - " + 
+                     timeFormat.format(record.getEndTime()));
+            }
+        } else {
+            Log.d(TAG, "设置记录: null");
+        }
+        
         invalidate();
     }
     
@@ -95,6 +117,7 @@ public class DailyDetailView extends View {
         super.onDraw(canvas);
         
         if (records == null || selectedDate == null) {
+            Log.d(TAG, "onDraw: 无记录或日期为空");
             return;
         }
         
@@ -103,6 +126,13 @@ public class DailyDetailView extends View {
         float padding = PADDING * density;
         float hourLabelWidth = 50 * density; // 小时标签宽度
         float timelineWidth = viewWidth - hourLabelWidth - padding * 2;
+        
+        // 显示重要调试信息
+        if (records.isEmpty()) {
+            Toast.makeText(getContext(), "没有活动记录数据可显示", Toast.LENGTH_SHORT).show();
+        }
+        
+        int totalDrawn = 0;
         
         // 绘制每个小时的横条
         for (int hour = 0; hour < HOURS_IN_DAY; hour++) {
@@ -123,15 +153,36 @@ public class DailyDetailView extends View {
             // 获取该小时的活动记录
             List<ActivityRecord> hourRecords = getRecordsForHour(hour);
             
+            // 调试信息
+            if (!hourRecords.isEmpty()) {
+                Log.d(TAG, hour + "点有 " + hourRecords.size() + " 条记录");
+            }
+            
             // 绘制活动记录
             for (ActivityRecord record : hourRecords) {
                 drawActivityBar(canvas, record, hour, hourLabelWidth + padding, y, timelineWidth, hourHeight);
+                totalDrawn++;
             }
+        }
+        
+        // 如果记录非空但没有绘制任何内容，显示错误信息
+        if (!records.isEmpty() && totalDrawn == 0) {
+            Toast.makeText(getContext(), "有记录但未能绘制: " + records.size() + "条", Toast.LENGTH_LONG).show();
+        } else if (totalDrawn > 0) {
+            Toast.makeText(getContext(), "成功绘制了 " + totalDrawn + " 条记录", Toast.LENGTH_SHORT).show();
         }
     }
     
     private void drawActivityBar(Canvas canvas, ActivityRecord record, int hour, 
                                float startX, float startY, float timelineWidth, float hourHeight) {
+        // 记录日志
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        String type = record.getType() == ActivityRecord.TYPE_POMODORO ? "番茄" : 
+                      record.getType() == ActivityRecord.TYPE_SHORT_BREAK ? "短休息" : "长休息";
+        Log.d(TAG, "绘制 " + hour + "点的 " + type + ": " + 
+              timeFormat.format(record.getStartTime()) + " - " + 
+              timeFormat.format(record.getEndTime()));
+        
         int startMinute = record.getStartMinute();
         int endMinute = record.getEndMinute();
         
@@ -140,17 +191,21 @@ public class DailyDetailView extends View {
         startCal.setTime(record.getStartTime());
         if (startCal.get(Calendar.HOUR_OF_DAY) < hour) {
             startMinute = 0;
+            Log.d(TAG, "调整开始时间为00分");
         }
         
         Calendar endCal = Calendar.getInstance();
         endCal.setTime(record.getEndTime());
         if (endCal.get(Calendar.HOUR_OF_DAY) > hour) {
             endMinute = 60;
+            Log.d(TAG, "调整结束时间为60分");
         }
         
         // 计算在时间轴上的位置
         float startPos = startX + (startMinute / 60f) * timelineWidth;
         float endPos = startX + (endMinute / 60f) * timelineWidth;
+        
+        Log.d(TAG, "绘制位置: " + startPos + " - " + endPos + ", 开始分钟: " + startMinute + ", 结束分钟: " + endMinute);
         
         // 设置活动类型对应的颜色
         switch (record.getType()) {
@@ -193,6 +248,15 @@ public class DailyDetailView extends View {
             if ((startHour <= hour && endHour >= hour) ||
                 (startHour == hour) ||
                 (endHour == hour)) {
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                String type = record.getType() == ActivityRecord.TYPE_POMODORO ? "番茄" : 
+                              record.getType() == ActivityRecord.TYPE_SHORT_BREAK ? "短休息" : "长休息";
+                
+                Log.d(TAG, "小时 " + hour + " 匹配到记录: " + type + " " +
+                     timeFormat.format(record.getStartTime()) + " - " + 
+                     timeFormat.format(record.getEndTime()) + 
+                     " (startHour=" + startHour + ", endHour=" + endHour + ")");
+                
                 result.add(record);
             }
         }

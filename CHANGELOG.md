@@ -13,6 +13,9 @@ All notable changes to the PomodoroTimer Android application will be documented 
 
 ### Fixed
 - 修复DailyDetailView中无法正确显示番茄时间、短休息和长休息记录的问题
+- 改进日期匹配算法，保证记录可以正确按日期和小时过滤
+- 增加调试日志和错误处理，提升应用稳定性
+- 添加测试数据生成功能，方便验证功能正确性
 
 ## [0.4.0] - 2023-08-20
 
