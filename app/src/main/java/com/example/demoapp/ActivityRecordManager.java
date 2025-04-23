@@ -22,8 +22,10 @@ public class ActivityRecordManager {
     private SharedPreferences preferences;
     private List<ActivityRecord> records;
     private Gson gson;
+    private Context context;
     
     public ActivityRecordManager(Context context) {
+        this.context = context;
         preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         gson = new Gson();
         loadRecords();
@@ -85,19 +87,22 @@ public class ActivityRecordManager {
      */
     public void addRecord(int type) {
         Date startTime = new Date();
-        // 设置默认持续时间（根据类型）
+        // 设置默认持续时间（根据类型和用户设置）
         Calendar cal = Calendar.getInstance();
         cal.setTime(startTime);
         
+        // 获取用户设置的时间
+        TimerPreferences timerPrefs = new TimerPreferences(context);
+        
         switch (type) {
             case ActivityRecord.TYPE_POMODORO:
-                cal.add(Calendar.MINUTE, 25); // 番茄时间默认25分钟
+                cal.add(Calendar.MINUTE, timerPrefs.getPomodoroTime()); // 用户设置的番茄时间
                 break;
             case ActivityRecord.TYPE_SHORT_BREAK:
-                cal.add(Calendar.MINUTE, 5); // 短休息默认5分钟
+                cal.add(Calendar.MINUTE, timerPrefs.getShortBreakTime()); // 用户设置的短休息时间
                 break;
             case ActivityRecord.TYPE_LONG_BREAK:
-                cal.add(Calendar.MINUTE, 15); // 长休息默认15分钟
+                cal.add(Calendar.MINUTE, timerPrefs.getLongBreakTime()); // 用户设置的长休息时间
                 break;
         }
         
