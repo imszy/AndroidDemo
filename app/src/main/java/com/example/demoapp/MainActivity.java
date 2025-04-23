@@ -358,14 +358,29 @@ public class MainActivity extends BaseActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                // 创建一个ToneGenerator实例并复用，避免重复创建
+                ToneGenerator toneGen = null;
                 try {
+                    toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
                     for (int i = 0; i < 5; i++) {
-                        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                        // 播放500毫秒的提示音
                         toneGen.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500);
-                        Thread.sleep(500); // Wait between sounds
+                        // 等待声音播放完毕
+                        Thread.sleep(500);
+                        
+                        // 只在前4次播放后需要等待
+                        if (i < 4) {
+                            // 等待500毫秒再播放下一个
+                            Thread.sleep(500);
+                        }
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } finally {
+                    // 确保释放ToneGenerator资源
+                    if (toneGen != null) {
+                        toneGen.release();
+                    }
                 }
             }
         }).start();

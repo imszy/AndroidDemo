@@ -4,6 +4,11 @@ All notable changes to the PomodoroTimer Android application will be documented 
 
 ## [Unreleased]
 
+### Changed
+- 优化计时器完成提示音播放机制，减少资源消耗，保证精确的播放间隔
+
+## [0.5.0] - 2023-08-25
+
 ### Added
 - 详细活动历史记录功能
   - 增强活动记录，存储开始和结束时间
