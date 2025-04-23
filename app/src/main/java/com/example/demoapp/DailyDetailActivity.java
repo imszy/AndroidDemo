@@ -63,7 +63,7 @@ public class DailyDetailActivity extends AppCompatActivity implements DailyDetai
         // 显示记录信息
         if (records.isEmpty()) {
             Toast.makeText(this, "该日期没有活动记录", Toast.LENGTH_SHORT).show();
-        } else {
+        } /*else {
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             StringBuilder info = new StringBuilder();
             info.append("找到").append(records.size()).append("条记录");
@@ -91,7 +91,7 @@ public class DailyDetailActivity extends AppCompatActivity implements DailyDetai
                 .append(" (").append(durationMinutes).append("分钟)");
             
             Toast.makeText(this, info.toString(), Toast.LENGTH_LONG).show();
-        }
+        }*/
         
         // 更新视图
         dailyDetailView.setDate(selectedDate, records);
