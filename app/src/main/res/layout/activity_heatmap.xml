@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:text="@string/activity_description"
         android:textColor="@color/colorText"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:visibility="gone" />
         
     <com.example.demoapp.CalendarHeatmapView
         android:id="@+id/heatmapView"
