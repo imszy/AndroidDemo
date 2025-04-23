@@ -2,6 +2,7 @@ package com.example.demoapp;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -54,6 +55,39 @@ public class DailyDetailActivity extends AppCompatActivity {
         
         // 获取该日期的所有记录
         List<ActivityRecord> records = recordManager.getRecordsForDate(selectedDate);
+        
+        // 显示记录信息
+        if (records.isEmpty()) {
+            Toast.makeText(this, "该日期没有活动记录", Toast.LENGTH_SHORT).show();
+        } else {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            StringBuilder info = new StringBuilder();
+            info.append("找到").append(records.size()).append("条记录");
+            
+            ActivityRecord sample = records.get(0);
+            String typeStr = "";
+            switch (sample.getType()) {
+                case ActivityRecord.TYPE_POMODORO:
+                    typeStr = "番茄工作";
+                    break;
+                case ActivityRecord.TYPE_SHORT_BREAK:
+                    typeStr = "短休息";
+                    break;
+                case ActivityRecord.TYPE_LONG_BREAK:
+                    typeStr = "长休息";
+                    break;
+            }
+            
+            long durationMs = sample.getEndTime().getTime() - sample.getStartTime().getTime();
+            int durationMinutes = (int) (durationMs / (1000 * 60));
+            
+            info.append("，例如：").append(typeStr)
+                .append("：").append(timeFormat.format(sample.getStartTime()))
+                .append("-").append(timeFormat.format(sample.getEndTime()))
+                .append(" (").append(durationMinutes).append("分钟)");
+            
+            Toast.makeText(this, info.toString(), Toast.LENGTH_LONG).show();
+        }
         
         // 更新视图
         dailyDetailView.setDate(selectedDate, records);

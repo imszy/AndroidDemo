@@ -81,27 +81,28 @@ public class ActivityRecordManager {
     }
     
     /**
-     * 添加一个活动记录（兼容旧方法）
+     * 添加一个活动记录（包含默认持续时间）
      */
     public void addRecord(int type) {
-        Date now = new Date();
-        // 查找是否已存在当天同类型的记录
-        boolean foundExisting = false;
+        Date startTime = new Date();
+        // 设置默认持续时间（根据类型）
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startTime);
         
-        for (ActivityRecord record : records) {
-            if (record.getType() == type && record.isSameDay(now)) {
-                record.incrementCount();
-                foundExisting = true;
+        switch (type) {
+            case ActivityRecord.TYPE_POMODORO:
+                cal.add(Calendar.MINUTE, 25); // 番茄时间默认25分钟
                 break;
-            }
+            case ActivityRecord.TYPE_SHORT_BREAK:
+                cal.add(Calendar.MINUTE, 5); // 短休息默认5分钟
+                break;
+            case ActivityRecord.TYPE_LONG_BREAK:
+                cal.add(Calendar.MINUTE, 15); // 长休息默认15分钟
+                break;
         }
         
-        // 如果不存在，创建新记录
-        if (!foundExisting) {
-            records.add(new ActivityRecord(now, type));
-        }
-        
-        // 保存更新后的记录
+        Date endTime = cal.getTime();
+        records.add(new ActivityRecord(startTime, type, startTime, endTime));
         saveRecords();
     }
     

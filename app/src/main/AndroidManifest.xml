@@ -40,6 +40,10 @@
             android:name=".DailyDetailActivity"
             android:exported="false"
             android:label="@string/daily_detail" />
+        <activity
+            android:name=".TestActivityRecordActivity"
+            android:exported="true"
+            android:label="活动记录测试" />
 
         <meta-data
             android:name="com.google.android.gms.version"

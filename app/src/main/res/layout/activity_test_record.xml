@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".TestActivityRecordActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="活动记录测试"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/addPomodoroButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="添加番茄工作记录"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/addShortBreakButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="添加短休息记录"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/addLongBreakButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="添加长休息记录"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/viewRecordsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="查看今日记录"
+        android:layout_marginBottom="16dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/resultTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            tools:text="记录显示在这里..." />
+
+    </ScrollView>
+
+</LinearLayout> 

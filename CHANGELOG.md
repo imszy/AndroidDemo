@@ -13,6 +13,7 @@ All notable changes to the PomodoroTimer Android application will be documented 
 
 ### Fixed
 - 修复DailyDetailView中无法正确显示番茄时间、短休息和长休息记录的问题
+- 修复活动记录显示开始和结束时间相同的问题，现在正确显示实际持续时间
 
 ## [0.4.0] - 2023-08-20
 
