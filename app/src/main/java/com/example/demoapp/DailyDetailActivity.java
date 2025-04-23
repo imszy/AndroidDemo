@@ -1,6 +1,7 @@
 package com.example.demoapp;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,12 @@ public class DailyDetailActivity extends AppCompatActivity implements DailyDetai
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_detail);
+        
+        // 设置返回按钮
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.daily_detail);
+        }
         
         // 初始化视图
         dailyDetailView = findViewById(R.id.daily_detail_view);
@@ -95,6 +102,19 @@ public class DailyDetailActivity extends AppCompatActivity implements DailyDetai
         
         // 更新视图
         dailyDetailView.setDate(selectedDate, records);
+    }
+    
+    /**
+     * 处理菜单项点击事件
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // 处理返回按钮点击
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     
     /**

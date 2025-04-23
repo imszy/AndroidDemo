@@ -15,6 +15,9 @@ All notable changes to the PomodoroTimer Android application will be documented 
 ### Changed
 - 简化活动历史日历视图，所有活动日期统一使用绿色标记
 - 改进日历视图界面，添加提示引导用户点击日期查看详情
+- 优化设置对话框布局
+  - 调整深色模式和语言下拉列表的宽度，确保内容完全显示
+  - 重新平衡文本和控件的空间分配，提升用户体验
 
 ### Fixed
 - 修复DailyDetailView中无法正确显示番茄时间、短休息和长休息记录的问题

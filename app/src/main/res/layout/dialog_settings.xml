@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:text="@string/pomodoro_duration"
             android:textColor="@color/colorText" />
 
@@ -47,7 +47,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:text="@string/short_break_duration"
             android:textColor="@color/colorText" />
 
@@ -70,7 +70,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:text="@string/long_break_duration"
             android:textColor="@color/colorText" />
 
@@ -94,7 +94,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:text="@string/dark_mode"
             android:textColor="@color/colorText" />
 
@@ -102,7 +102,30 @@
             android:id="@+id/darkModeSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="2"
+            android:minWidth="160dp" />
+    </LinearLayout>
+    
+    <!-- 添加语言下拉列表 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="@string/language"
+            android:textColor="@color/colorText" />
+
+        <Spinner
+            android:id="@+id/languageSpinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:minWidth="160dp" />
     </LinearLayout>
 
     <LinearLayout
