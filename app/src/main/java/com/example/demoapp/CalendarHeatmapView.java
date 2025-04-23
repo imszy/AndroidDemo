@@ -27,6 +27,7 @@ public class CalendarHeatmapView extends View {
     private static final int COLOR_POMODORO = Color.parseColor("#e74c3c"); // 番茄色
     private static final int COLOR_SHORT_BREAK = Color.parseColor("#2ecc71"); // 浅绿色
     private static final int COLOR_LONG_BREAK = Color.parseColor("#27ae60"); // 深绿色
+    private static final int COLOR_ACTIVITY = Color.parseColor("#2ecc71"); // 活动标记颜色（绿色）
     private static final int COLOR_EMPTY = Color.parseColor("#f5f5f5"); // 空格子颜色
     private static final int COLOR_TEXT = Color.parseColor("#7f8c8d"); // 文字颜色
     
@@ -39,7 +40,7 @@ public class CalendarHeatmapView extends View {
     private Paint cellPaint; // 绘制单元格
     private Paint textPaint; // 绘制文本
     private List<ActivityRecord> records = new ArrayList<>(); // 活动记录
-    private Map<String, ActivityRecord> dateToRecord = new HashMap<>(); // 日期到记录的映射
+    private Map<String, Boolean> dateHasActivity = new HashMap<>(); // 日期是否有活动的映射
     
     private float cellSize; // 单元格大小
     
@@ -111,11 +112,11 @@ public class CalendarHeatmapView extends View {
      */
     public void setRecords(List<ActivityRecord> records) {
         this.records = records;
-        // 创建日期到记录的映射
-        dateToRecord.clear();
+        // 创建日期到活动状态的映射
+        dateHasActivity.clear();
         for (ActivityRecord record : records) {
             String key = keyFormat.format(record.getDate());
-            dateToRecord.put(key, record);
+            dateHasActivity.put(key, true); // 只需要知道该日期有活动即可
         }
         invalidate(); // 重绘视图
     }
@@ -165,24 +166,9 @@ public class CalendarHeatmapView extends View {
             // 保存日期单元格
             dateCells.add(new DateCell(rect, (Date) date.clone()));
             
-            // 根据记录类型设置颜色
-            if (dateToRecord.containsKey(key)) {
-                ActivityRecord record = dateToRecord.get(key);
-                int type = record.getType();
-                switch (type) {
-                    case ActivityRecord.TYPE_POMODORO:
-                        cellPaint.setColor(COLOR_POMODORO);
-                        break;
-                    case ActivityRecord.TYPE_SHORT_BREAK:
-                        cellPaint.setColor(COLOR_SHORT_BREAK);
-                        break;
-                    case ActivityRecord.TYPE_LONG_BREAK:
-                        cellPaint.setColor(COLOR_LONG_BREAK);
-                        break;
-                    default:
-                        cellPaint.setColor(COLOR_EMPTY);
-                        break;
-                }
+            // 设置单元格颜色 - 有活动的日期统一使用绿色，没有活动的日期使用空颜色
+            if (dateHasActivity.containsKey(key)) {
+                cellPaint.setColor(COLOR_ACTIVITY);
             } else {
                 cellPaint.setColor(COLOR_EMPTY);
             }

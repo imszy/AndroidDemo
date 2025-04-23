@@ -32,67 +32,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:gravity="center">
         
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:background="@drawable/short_break_indicator"
+            android:layout_marginEnd="8dp" />
             
-            <View
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:background="@drawable/pomodoro_indicator"
-                android:layout_marginEnd="8dp" />
-                
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/pomodoro"
-                android:textColor="@color/colorText" />
-        </LinearLayout>
-        
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:text="@string/has_activity"
+            android:textColor="@color/colorText" />
             
-            <View
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:background="@drawable/short_break_indicator"
-                android:layout_marginEnd="8dp" />
-                
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/short_break"
-                android:textColor="@color/colorText" />
-        </LinearLayout>
-        
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-            
-            <View
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:background="@drawable/long_break_indicator"
-                android:layout_marginEnd="8dp" />
-                
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/long_break"
-                android:textColor="@color/colorText" />
-        </LinearLayout>
     </LinearLayout>
     
     <LinearLayout
@@ -128,6 +82,14 @@
             android:textColor="@color/colorText"
             android:gravity="center" />
     </LinearLayout>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/click_date_for_details"
+        android:textColor="@color/colorText"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
     
     <Button
         android:id="@+id/backButton"

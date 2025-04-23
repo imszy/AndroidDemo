@@ -49,6 +49,8 @@
     <string name="back">Back</string>
     <string name="view_activity_history">View Activity History</string>
     <string name="daily_detail">Daily Detail</string>
+    <string name="has_activity">有活动记录</string>
+    <string name="click_date_for_details">点击日期查看详细活动时间线</string>
     
     <!-- 隐私政策 -->
     <string name="privacy_policy">Privacy Policy</string>
