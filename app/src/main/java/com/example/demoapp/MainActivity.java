@@ -406,8 +406,9 @@ public class MainActivity extends BaseActivity {
         
         Spinner languageSpinner = new Spinner(this);
         LinearLayout.LayoutParams spinnerParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 2.0f);
         languageSpinner.setLayoutParams(spinnerParams);
+        languageSpinner.setMinimumWidth(dpToPx(180));
         
         ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(this,
                 R.array.language_options, android.R.layout.simple_spinner_item);
