@@ -376,6 +376,7 @@ public class MainActivity extends BaseActivity {
         EditText shortBreakTimeEditText = dialogView.findViewById(R.id.shortBreakTimeEditText);
         EditText longBreakTimeEditText = dialogView.findViewById(R.id.longBreakTimeEditText);
         Spinner darkModeSpinner = dialogView.findViewById(R.id.darkModeSpinner);
+        Spinner languageSpinner = dialogView.findViewById(R.id.languageSpinner);
         
         // 设置深色模式下拉列表适配器
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -387,29 +388,7 @@ public class MainActivity extends BaseActivity {
         int currentDarkMode = timerPreferences.getDarkMode();
         darkModeSpinner.setSelection(currentDarkMode);
         
-        // 添加语言选择下拉列表
-        LinearLayout settingsLayout = (LinearLayout) dialogView;
-        
-        LinearLayout languageLayout = new LinearLayout(this);
-        languageLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT));
-        languageLayout.setOrientation(LinearLayout.HORIZONTAL);
-        languageLayout.setPadding(0, 0, 0, 16);
-        
-        TextView languageLabel = new TextView(this);
-        LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 2.0f);
-        languageLabel.setLayoutParams(labelParams);
-        languageLabel.setText(R.string.language);
-        languageLabel.setTextColor(getResources().getColor(R.color.colorText));
-        
-        Spinner languageSpinner = new Spinner(this);
-        LinearLayout.LayoutParams spinnerParams = new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 2.0f);
-        languageSpinner.setLayoutParams(spinnerParams);
-        languageSpinner.setMinimumWidth(dpToPx(180));
-        
+        // 设置语言下拉列表
         ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(this,
                 R.array.language_options, android.R.layout.simple_spinner_item);
         languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -424,13 +403,6 @@ public class MainActivity extends BaseActivity {
         } else {
             languageSpinner.setSelection(0); // System
         }
-        
-        languageLayout.addView(languageLabel);
-        languageLayout.addView(languageSpinner);
-        
-        // 将语言选择添加到设置对话框布局中
-        int position = settingsLayout.getChildCount() - 1; // 在最后一个保存/取消按钮前插入
-        settingsLayout.addView(languageLayout, position);
         
         // Set current timer values
         pomodoroTimeEditText.setText(String.valueOf(timerPreferences.getPomodoroTime()));
