@@ -85,11 +85,12 @@
     </LinearLayout>
     
     <!-- 添加深色模式下拉列表 -->
-    <!--<LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="0dp"
@@ -104,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:minWidth="180dp" />
-    </LinearLayout>-->
+    </LinearLayout>
     
     <!-- 添加语言下拉列表 -->
     <LinearLayout
