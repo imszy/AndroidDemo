@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
@@ -15,7 +16,7 @@ import java.util.Locale;
 /**
  * 显示一天的详细活动记录
  */
-public class DailyDetailActivity extends AppCompatActivity {
+public class DailyDetailActivity extends AppCompatActivity implements DailyDetailView.OnActivityClickListener {
     
     public static final String EXTRA_DATE = "com.example.demoapp.EXTRA_DATE";
     
@@ -32,6 +33,9 @@ public class DailyDetailActivity extends AppCompatActivity {
         // 初始化视图
         dailyDetailView = findViewById(R.id.daily_detail_view);
         dateTextView = findViewById(R.id.text_selected_date);
+        
+        // 设置活动点击监听器
+        dailyDetailView.setOnActivityClickListener(this);
         
         // 获取传入的日期
         long dateMillis = getIntent().getLongExtra(EXTRA_DATE, 0);
@@ -91,5 +95,64 @@ public class DailyDetailActivity extends AppCompatActivity {
         
         // 更新视图
         dailyDetailView.setDate(selectedDate, records);
+    }
+    
+    /**
+     * 当用户点击活动记录时调用
+     */
+    @Override
+    public void onActivityClick(ActivityRecord record) {
+        // 显示详细的活动信息对话框
+        showActivityDetailDialog(record);
+    }
+    
+    /**
+     * 显示活动记录详情对话框
+     */
+    private void showActivityDetailDialog(ActivityRecord record) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日", Locale.getDefault());
+        
+        String typeStr;
+        int iconResId;
+        
+        switch (record.getType()) {
+            case ActivityRecord.TYPE_POMODORO:
+                typeStr = "番茄工作";
+                iconResId = R.drawable.pomodoro_indicator;
+                break;
+            case ActivityRecord.TYPE_SHORT_BREAK:
+                typeStr = "短休息";
+                iconResId = R.drawable.short_break_indicator;
+                break;
+            case ActivityRecord.TYPE_LONG_BREAK:
+                typeStr = "长休息";
+                iconResId = R.drawable.long_break_indicator;
+                break;
+            default:
+                typeStr = "未知类型";
+                iconResId = android.R.drawable.ic_dialog_info;
+                break;
+        }
+        
+        // 计算持续时间
+        long durationMs = record.getEndTime().getTime() - record.getStartTime().getTime();
+        int durationMinutes = (int) (durationMs / (1000 * 60));
+        int durationSeconds = (int) ((durationMs / 1000) % 60);
+        
+        String message = String.format("类型: %s\n\n日期: %s\n\n开始时间: %s\n\n结束时间: %s\n\n持续时间: %d分%d秒",
+                typeStr,
+                dateFormat.format(record.getDate()),
+                timeFormat.format(record.getStartTime()),
+                timeFormat.format(record.getEndTime()),
+                durationMinutes,
+                durationSeconds);
+        
+        new AlertDialog.Builder(this)
+                .setTitle("活动详情")
+                .setIcon(iconResId)
+                .setMessage(message)
+                .setPositiveButton("确定", null)
+                .show();
     }
 } 

@@ -6,12 +6,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 显示一天中每小时的活动记录详情的视图
@@ -35,6 +39,26 @@ public class DailyDetailView extends View {
     private List<ActivityRecord> records;
     private Date selectedDate;
     private int viewWidth;
+    private List<ActivityBarInfo> activityBars; // 存储每个活动条的信息，用于点击检测
+    
+    // 用于存储活动条的位置和对应的记录信息
+    private class ActivityBarInfo {
+        RectF rect;
+        ActivityRecord record;
+        
+        ActivityBarInfo(RectF rect, ActivityRecord record) {
+            this.rect = rect;
+            this.record = record;
+        }
+    }
+    
+    // 活动记录点击监听器
+    private OnActivityClickListener activityClickListener;
+    
+    // 定义活动记录点击监听器接口
+    public interface OnActivityClickListener {
+        void onActivityClick(ActivityRecord record);
+    }
     
     public DailyDetailView(Context context) {
         super(context);
@@ -65,6 +89,18 @@ public class DailyDetailView extends View {
         hourLinePaint = new Paint();
         hourLinePaint.setColor(COLOR_HOUR_LINE);
         hourLinePaint.setStrokeWidth(1 * density);
+        
+        activityBars = new ArrayList<>();
+        
+        // 设置可点击
+        setClickable(true);
+    }
+    
+    /**
+     * 设置活动记录点击监听器
+     */
+    public void setOnActivityClickListener(OnActivityClickListener listener) {
+        this.activityClickListener = listener;
     }
     
     public void setDate(Date date, List<ActivityRecord> records) {
@@ -97,6 +133,9 @@ public class DailyDetailView extends View {
         if (records == null || selectedDate == null) {
             return;
         }
+        
+        // 清空活动条列表，准备重新生成
+        activityBars.clear();
         
         float density = getResources().getDisplayMetrics().density;
         float hourHeight = HOUR_HEIGHT * density;
@@ -165,9 +204,14 @@ public class DailyDetailView extends View {
                 break;
         }
         
-        // 绘制活动条
+        // 创建活动条矩形
         RectF rect = new RectF(startPos, startY + hourHeight * 0.2f, 
                              endPos, startY + hourHeight * 0.8f);
+        
+        // 记录活动条位置和对应的记录，用于点击检测
+        activityBars.add(new ActivityBarInfo(rect, record));
+        
+        // 绘制活动条
         canvas.drawRect(rect, activityPaint);
     }
     
@@ -198,5 +242,63 @@ public class DailyDetailView extends View {
         }
         
         return result;
+    }
+    
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            float x = event.getX();
+            float y = event.getY();
+            
+            // 检查点击的活动条
+            for (ActivityBarInfo barInfo : activityBars) {
+                if (barInfo.rect.contains(x, y)) {
+                    // 如果设置了监听器，通知监听器
+                    if (activityClickListener != null) {
+                        activityClickListener.onActivityClick(barInfo.record);
+                    } else {
+                        // 如果没有设置监听器，直接显示一个Toast
+                        showActivityInfo(barInfo.record);
+                    }
+                    return true;
+                }
+            }
+        }
+        
+        return super.onTouchEvent(event);
+    }
+    
+    /**
+     * 直接在视图中显示活动信息（如果没有设置监听器）
+     */
+    private void showActivityInfo(ActivityRecord record) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        
+        String typeStr;
+        switch (record.getType()) {
+            case ActivityRecord.TYPE_POMODORO:
+                typeStr = "番茄工作";
+                break;
+            case ActivityRecord.TYPE_SHORT_BREAK:
+                typeStr = "短休息";
+                break;
+            case ActivityRecord.TYPE_LONG_BREAK:
+                typeStr = "长休息";
+                break;
+            default:
+                typeStr = "未知类型";
+                break;
+        }
+        
+        // 计算持续时间（分钟）
+        long durationMs = record.getEndTime().getTime() - record.getStartTime().getTime();
+        int durationMinutes = (int) (durationMs / (1000 * 60));
+        
+        String info = typeStr + ": " +
+                timeFormat.format(record.getStartTime()) + " - " +
+                timeFormat.format(record.getEndTime()) + 
+                " (" + durationMinutes + "分钟)";
+        
+        Toast.makeText(getContext(), info, Toast.LENGTH_SHORT).show();
     }
 } 
