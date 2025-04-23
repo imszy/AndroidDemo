@@ -11,6 +11,7 @@ All notable changes to the PomodoroTimer Android application will be documented 
   - 点击日期可查看该日24小时活动时间线
   - 活动类型用不同颜色显示：番茄工作(红色)、短休息(浅绿色)、长休息(深绿色)
   - 点击具体活动记录可显示详细时间信息对话框，包括开始时间、结束时间和持续时长
+- 增强计时器完成通知效果，提示音和振动会连续触发5次，提高用户注意度
 
 ### Changed
 - 简化活动历史日历视图，所有活动日期统一使用绿色标记

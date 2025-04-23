@@ -354,15 +354,30 @@ public class MainActivity extends BaseActivity {
     }
     
     private void playNotificationSound() {
-        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-        toneGen.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500);
+        // Play sound 5 times with delay between each
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (int i = 0; i < 5; i++) {
+                        ToneGenerator toneGen = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                        toneGen.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 500);
+                        Thread.sleep(500); // Wait between sounds
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
     
     private void vibrate() {
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator != null && vibrator.hasVibrator()) {
-            // Vibrate for 500 milliseconds
-            vibrator.vibrate(500);
+            // Create a pattern for 5 vibrations with pauses between
+            // {delay before start, vibrate duration, pause duration, vibrate duration, ...}
+            long[] pattern = {0, 500, 500, 500, 500, 500, 500, 500, 500, 500};
+            vibrator.vibrate(pattern, -1); // -1 means don't repeat the pattern
         }
     }
     
