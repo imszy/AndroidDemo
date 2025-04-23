@@ -1,7 +1,5 @@
 package com.example.demoapp;
 
-import android.util.Log;
-
 import java.util.Calendar;
 import java.util.Date;
 
@@ -9,7 +7,6 @@ import java.util.Date;
  * 存储用户活动记录的模型类
  */
 public class ActivityRecord {
-    private static final String TAG = "ActivityRecord";
     public static final int TYPE_POMODORO = 0;
     public static final int TYPE_SHORT_BREAK = 1;
     public static final int TYPE_LONG_BREAK = 2;
@@ -90,40 +87,24 @@ public class ActivityRecord {
     public int getHour() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(startTime);
-        int hour = cal.get(Calendar.HOUR_OF_DAY);
-        Log.d(TAG, "获取小时: " + hour + " (时间: " + startTime + ")");
-        return hour;
+        return cal.get(Calendar.HOUR_OF_DAY);
     }
     
     /**
      * 获取活动开始的分钟
      */
     public int getStartMinute() {
-        if (startTime == null) {
-            Log.e(TAG, "startTime为空，返回0");
-            return 0;
-        }
-        
         Calendar cal = Calendar.getInstance();
         cal.setTime(startTime);
-        int minute = cal.get(Calendar.MINUTE);
-        Log.d(TAG, "获取开始分钟: " + minute);
-        return minute;
+        return cal.get(Calendar.MINUTE);
     }
     
     /**
      * 获取活动结束的分钟
      */
     public int getEndMinute() {
-        if (endTime == null) {
-            Log.e(TAG, "endTime为空，返回0");
-            return 0;
-        }
-        
         Calendar cal = Calendar.getInstance();
         cal.setTime(endTime);
-        int minute = cal.get(Calendar.MINUTE);
-        Log.d(TAG, "获取结束分钟: " + minute);
-        return minute;
+        return cal.get(Calendar.MINUTE);
     }
 } 
