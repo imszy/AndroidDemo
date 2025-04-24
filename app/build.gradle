@@ -13,11 +13,61 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "en", "zh-rCN"  // 支持英文和中文
     }
+    
+    // 添加签名配置
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            // 使用环境变量或从属性文件中读取发布签名信息
+            /*def keystorePropertiesFile = rootProject.file("keystore.properties")
+            
+            if (System.getenv('RELEASE_STORE_FILE') != null) {
+                // 从GitHub Actions环境变量中获取签名信息
+                storeFile file(System.getenv('RELEASE_STORE_FILE'))
+                storePassword System.getenv('RELEASE_STORE_PASSWORD')
+                keyAlias System.getenv('RELEASE_KEY_ALIAS')
+                keyPassword System.getenv('RELEASE_KEY_PASSWORD')
+            } else if (keystorePropertiesFile.exists()) {
+                // 从本地属性文件中获取签名信息（用于本地构建）
+                Properties keystoreProperties = new Properties()
+                keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+                
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            } else {
+                // 如果没有配置发布签名信息，则回退到使用debug签名
+                storeFile file('debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+                
+                // 输出警告信息
+                println 'Warning: Using debug signing config for release build! Set up release signing for production builds.'
+            }*/
+
+            storeFile file('release.keystore')
+            storePassword 'pomodoroapk'
+            keyAlias 'androidreleasekey'
+            keyPassword 'pomodoroapk'
+        }
+    }
+    
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {

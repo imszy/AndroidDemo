@@ -27,14 +27,33 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
+    - name: Copy debug keystore
+      run: mkdir -p $HOME/.android && cp app/debug.keystore $HOME/.android/debug.keystore
+      
     - name: Build with Gradle
       run: ./gradlew build
     
     - name: Build debug APK
       run: ./gradlew assembleDebug
+      
+    - name: Build release APK
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      env:
+        RELEASE_STORE_FILE: ${{ secrets.RELEASE_STORE_FILE || 'app/release.keystore' }}
+        RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD || 'pomodoroapk' }}
+        RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS || 'androidreleasekey' }}
+        RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD || 'pomodoroapk' }}
+      run: ./gradlew assembleRelease
     
-    - name: Upload APK
+    - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: app/build/outputs/apk/debug/app-debug.apk 
+        path: app/build/outputs/apk/debug/app-debug.apk
+        
+    - name: Upload Release APK
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: app/build/outputs/apk/release/app-release.apk 

@@ -1,0 +1,22 @@
+--- debug ---
+填写参数（必须匹配 Android Debug 默认配置）：
+Alias（别名）: androiddebugkey（必须！否则 Android 不认）
+Password（密码）: android（默认 Debug 密码）
+Validity（有效期）: 10000（天数）
+Algorithm（算法）: RSA
+Key Size（密钥长度）: 2048
+Distinguished Name（DN）:
+	CN=Android Debug, O=Android, C=US
+	
+	
+	
+	
+--- release ---
+填写参数（必须匹配 Android Debug 默认配置）：
+Alias（别名）: androidreleasekey
+Password（密码）: pomodoroapk
+Validity（有效期）: 10000（天数）
+Algorithm（算法）: RSA
+Key Size（密钥长度）: 2048
+Distinguished Name（DN）:
+	CN=Android Debug, O=Android, C=US
