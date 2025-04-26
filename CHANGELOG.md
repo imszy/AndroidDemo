@@ -8,6 +8,7 @@ All notable changes to the PomodoroTimer Android application will be documented 
 - 优化计时器完成提示音播放机制，减少资源消耗，保证精确的播放间隔
 - 改进应用签名配置，支持在GitHub Actions中使用环境变量进行发布版本签名
 - 更新GitHub workflow构建流程，分别构建并上传debug和release版本APK
+- 自定义APK输出文件名，更改为"pomodoro-focus-debug.apk"和"pomodoro-focus.apk"
 
 ## [0.5.0] - 2023-08-25
 

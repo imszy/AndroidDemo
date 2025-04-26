@@ -70,6 +70,18 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    
+    // 自定义APK输出文件名
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.buildType.name == 'release') {
+                outputFileName = "pomodoro-focus.apk"
+            } else if (variant.buildType.name == 'debug') {
+                outputFileName = "pomodoro-focus-debug.apk"
+            }
+        }
+    }
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
