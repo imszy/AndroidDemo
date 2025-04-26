@@ -1,3 +1,5 @@
+https://keystore-explorer.org/
+
 --- debug ---
 填写参数（必须匹配 Android Debug 默认配置）：
 Alias（别名）: androiddebugkey（必须！否则 Android 不认）
